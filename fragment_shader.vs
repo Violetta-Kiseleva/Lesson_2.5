@@ -17,6 +17,10 @@ struct Light {
     float constant;
     float linear;
     float quadratic;
+
+    // угол отсечения (радиус подсветки)
+    float cutOff;
+    float outerCutOff;
 };
 
 uniform Light light; 
@@ -58,6 +62,13 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));  
+
+
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon   = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    diffuse *= intensity;
+    specular *= intensity; 
 
     // расстояние от источника до объекта
     float distance = length(light.position - FragPos);

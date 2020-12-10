@@ -334,7 +334,7 @@ int main(void)
         
         light_cube_Shader.setVec3("light.position", lightPos);
         light_cube_Shader.setVec3("viewPos", camera.Position);
-
+        light_cube_Shader.setFloat("material.shininess", 32.0f);
 
         //glm::vec3 lightColor;
         /*lightColor.x = sin(glfwGetTime() * 2.0f);
@@ -349,20 +349,29 @@ int main(void)
         //light_cube_Shader.setVec3("light.ambient", ambientColor);
         //light_cube_Shader.setVec3("light.diffuse", diffuseColor);
         
+        // направленный свет
         light_cube_Shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
         light_cube_Shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
         light_cube_Shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        light_cube_Shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);      // вектор направлен вниз
-
+        //light_cube_Shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        
+        
         light_cube_Shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         light_cube_Shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
         light_cube_Shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        light_cube_Shader.setFloat("material.shininess", 64.0f); 
 
+        // прожектор 
+        light_cube_Shader.setVec3("light.direction", camera.Front);
+        light_cube_Shader.setVec3("light.position", camera.Position);
+        
         // задаем постоянный, линейный и квадратичный коэффициенты
         light_cube_Shader.setFloat("light.constant", 1.0f);
         light_cube_Shader.setFloat("light.linear", 0.09f);
         light_cube_Shader.setFloat("light.quadratic", 0.032f);
+
+        // для прожектора
+        light_cube_Shader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));     // передаем cos (вычислительные ресурсы)
+        light_cube_Shader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.0f)));
 
         /*glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
@@ -438,7 +447,7 @@ int main(void)
          }
 
         ////// настраиваем лампу-куб
-        lamp_Shader.Use();
+        /*lamp_Shader.Use();
 
         lamp_Shader.setMat4("projection", projection);
         lamp_Shader.setMat4("view", view);
@@ -452,7 +461,7 @@ int main(void)
         // рисование куба лампы 
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        //glBindVertexArray(0);
+        //glBindVertexArray(0);*/
 
         // Меняем местами буфера экрана
         glfwSwapBuffers(window);
